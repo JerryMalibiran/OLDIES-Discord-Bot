@@ -17,4 +17,12 @@ def run(token, ai):
         response = ai.completion(prompt)
         await ctx.reply(response)
 
+    @bot.command()
+    async def image(ctx, *, prompt):
+        response = ai.generation(prompt)
+        embed = discord.Embed(title="Generated Image",
+                              description=prompt, url=response)
+        embed.set_image(url=response)
+        await ctx.reply(embed=embed)
+
     bot.run(token)

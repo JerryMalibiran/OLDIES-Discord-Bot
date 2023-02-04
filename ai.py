@@ -15,4 +15,13 @@ class AI:
             frequency_penalty=0,
             presence_penalty=0
         )
-        return response.get('choices')[0].get('text')
+        return response['choices'][0]['text']
+
+    def generation(self, prompt):
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="256x256"
+        )
+
+        return response['data'][0]['url']
