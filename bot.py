@@ -13,15 +13,12 @@ def run(token, ai):
         await bot.tree.sync()
         print(f'Logged in {bot.user} ({bot.user.id})')
 
-    @bot.command()
-    async def gpt(ctx, *, prompt):
-        response = ai.completion(prompt)
-        await ctx.reply(response)
-
     @bot.tree.command(name="gpt", description="Talk to an AI. Ask Anything!")
     async def gpt(interaction: discord.Interaction, prompt: str):
+        await interaction.response.defer()
         response = ai.completion(prompt)
-        await interaction.response.send_message(response)
+        embed = discord.Embed(title="Prompt", description=prompt)
+        await interaction.followup.send(content=response, embed=embed)
 
     @bot.tree.command(name="image", description="Create an AI generated image from a text prompt. How about a cat?")
     async def image(interaction: discord.Interaction, prompt: str):
