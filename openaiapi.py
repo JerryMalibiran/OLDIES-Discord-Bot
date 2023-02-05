@@ -1,7 +1,7 @@
 import openai
 
 
-class AI:
+class OpenAIAPI:
     def __init__(self, key):
         openai.api_key = key
 
