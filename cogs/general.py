@@ -45,8 +45,10 @@ class General(commands.Cog):
         view = View().add_item(Dropdown(self.bot))
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
+    @commands.is_owner()
     @app_commands.command(name="sync", description="For syncing bot commands.")
     async def sync(self, interaction: discord.Interaction):
+        self.bot.tree.copy_global_to(guild=interaction.guild)
         n = await self.bot.tree.sync(guild=interaction.guild)
         await interaction.response.send_message(f'{len(n)} command/s synced to this server ({interaction.guild}).')
 

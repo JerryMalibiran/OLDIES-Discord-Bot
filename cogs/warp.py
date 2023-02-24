@@ -28,7 +28,7 @@ class Warp(commands.Cog):
 
     @app_commands.command(name="warp-help", description="Instructions for using warp commands.")
     async def warp_help(self, interaction: discord.Interaction):
-        await interaction.response.send_message("In order to data to your warp+ account, (in the warp application) simply go to Settings > Preferences > General > copy \"Device ID\" and use it with the \"/add-data\" command.")
+        await interaction.response.send_message("In order to add data to your warp+ account, (in the warp application) simply go to Settings > Preferences > General > copy \"Device ID\" and use it with the \"/add-data\" command.")
 
     @app_commands.command(name="add-data", description="Add 1GB data to your warp account!")
     async def add_data(self, interaction: discord.Interaction, device_id: str):
