@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from openaiapi import OpenAIAPI
 
 
 class AI(commands.Cog):
