@@ -26,7 +26,7 @@ class Warp(commands.Cog):
         except Exception as error:
             print(error)
 
-    @app_commands.command(name="warp-help", description="Add 1GB data to your warp account!")
+    @app_commands.command(name="warp-help", description="Instructions for using warp commands.")
     async def warp_help(self, interaction: discord.Interaction):
         await interaction.response.send_message("In order to data to your warp+ account, (in the warp application) simply go to Settings > Preferences > General > copy \"Device ID\" and use it with the \"/add-data\" command.")
 

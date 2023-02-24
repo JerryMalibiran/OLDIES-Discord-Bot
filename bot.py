@@ -25,5 +25,4 @@ class DiscordBot(commands.Bot):
         activity = discord.Activity(
             name='/help', type=discord.ActivityType.listening)
         await self.change_presence(activity=activity)
-        # await self.tree.sync()
         print(f'Logged in {self.user} ({self.user.id})')
