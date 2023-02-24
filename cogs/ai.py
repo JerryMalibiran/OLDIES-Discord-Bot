@@ -8,8 +8,8 @@ class AI(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(name="gpt", description="Talk to an AI. Ask Anything!")
-    async def gpt(self, interaction: discord.Interaction, prompt: str):
+    @app_commands.command(name="chat", description="Talk to an AI. Ask Anything!")
+    async def chat(self, interaction: discord.Interaction, prompt: str):
         await interaction.response.defer()
         response = self.bot.ai.completion(prompt)
         embed = discord.Embed(title="Prompt", description=prompt)
