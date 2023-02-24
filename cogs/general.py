@@ -34,7 +34,7 @@ class General(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @ app_commands.command(name="help", description="Are you lost? Get some help.")
+    @app_commands.command(name="help", description="Are you lost? Get some help.")
     async def help(self, interaction: discord.Interaction):
 
         embed = discord.Embed(
@@ -44,6 +44,12 @@ class General(commands.Cog):
 
         view = View().add_item(Dropdown(self.bot))
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+
+    @app_commands.command(name="sync", description="For syncing bot commands.")
+    async def sync(self, interaction: discord.Interaction):
+        self.bot.tree.copy_global_to(guild=interaction.guild)
+        n = await self.bot.tree.sync(guild=interaction.guild)
+        await interaction.response.send_message(f'{len(n)} command/s synced to this server ({interaction.guild}).')
 
 
 async def setup(bot: commands.Bot):
