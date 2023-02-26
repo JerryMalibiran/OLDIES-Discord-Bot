@@ -11,8 +11,8 @@ import os
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.queue = []
-        self.playing = ''
+        self.queue = {}
+        self.playing = {}
         self.dir = os.getcwd()
 
         ydl_format_options = {
@@ -55,10 +55,8 @@ class Music(commands.Cog):
         status = await self.check_connection(interaction)
 
         if status:
-            self.playing = ''
-            voice = get(self.bot.voice_clients, guild=interaction.guild)
-            if voice.is_playing():
-                voice.stop()
+            self.playing[interaction.guild_id] = ''
+            self.stop(interaction)
 
             await self.play_audio(url, interaction)
 
@@ -67,14 +65,35 @@ class Music(commands.Cog):
         status = await self.check_connection(interaction)
 
         if status:
-            await self.play_next(interaction)
+            if interaction.guild_id not in self.queue:
+                self.queue[interaction.guild_id] = []
+
+            if len(self.queue[interaction.guild_id]) < 1:
+                await interaction.response.send_message('Queue is empty!')
+                return
+
+            voice = get(self.bot.voice_clients, guild=interaction.guild)
+            if voice.is_playing():
+                self.stop(interaction)
+                await interaction.response.send_message('Next audio will be played shortly...')
+            else:
+                await self.play_next(interaction)
+
+    def stop(self, interaction):
+        voice = get(self.bot.voice_clients, guild=interaction.guild)
+        if voice.is_playing():
+            voice.stop()
 
     @app_commands.command(name="add", description="Add something to the queue.")
     async def add(self, interaction: discord.Interaction, url: str):
         status = await self.check_connection(interaction)
 
         if status:
-            self.queue.append(url)
+            if interaction.guild.id in self.queue:
+                self.queue[interaction.guild_id].append(url)
+            else:
+                self.queue[interaction.guild_id] = [url]
+
             await interaction.response.send_message(f'{url} added to queue!')
 
     @app_commands.command(name="clear", description="Clear the queue.")
@@ -82,7 +101,8 @@ class Music(commands.Cog):
         status = await self.check_connection(interaction)
 
         if status:
-            self.queue.clear()
+            if interaction.guild.id in self.queue:
+                self.queue[interaction.guild_id].clear()
             await interaction.response.send_message(f'Queue cleared!')
 
     @app_commands.command(name="disconnect", description="Disconnect the bot.")
@@ -91,19 +111,36 @@ class Music(commands.Cog):
 
         if status:
             voice = get(self.bot.voice_clients, guild=interaction.guild)
+            self.playing[interaction.guild_id] = ''
+            self.queue[interaction.guild_id].clear()
             await voice.disconnect()
             await interaction.response.send_message(f'Disconnected!')
 
     @app_commands.command(name="current", description="Shows what is currently playing.")
     async def current(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f'Now playing: {self.playing}')
+
+        if interaction.guild_id not in self.playing:
+            self.playing[interaction.guild_id] = ''
+
+        if self.playing[interaction.guild_id] == '':
+            audio = 'N/A'
+        else:
+            audio = self.playing[interaction.guild_id]
+
+        await interaction.response.send_message(f'Now playing: {audio}')
 
     @app_commands.command(name="queue", description="Shows the queue.")
     async def queue(self, interaction: discord.Interaction):
+        if interaction.guild_id not in self.queue:
+            self.queue[interaction.guild_id] = []
+
         str_queue = 'Queue:'
 
-        for i, val in enumerate(self.queue):
-            str_queue += f'\n{i+1}. {val}'
+        if len(self.queue[interaction.guild_id]) < 1:
+            str_queue += '\nN/A'
+        else:
+            for i, val in enumerate(self.queue[interaction.guild_id]):
+                str_queue += f'\n{i+1}. {val}'
 
         await interaction.response.send_message(str_queue)
 
@@ -125,38 +162,37 @@ class Music(commands.Cog):
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         voice.play(player, after=lambda e: print(f'Player error: {e}') if e else asyncio.run_coroutine_threadsafe(
             self.play_next(interaction, True), loop))
-        self.playing = data['original_url']
+        self.playing[interaction.guild_id] = data['original_url']
 
         if auto:
-            await interaction.channel.send(f'Now playing next in queue: {self.playing}')
+            await interaction.channel.send(f'Now playing next in queue: {self.playing[interaction.guild_id]}')
         else:
-            await interaction.followup.send(f'Now playing next in queue: {self.playing}' if next else f'Now playing: {self.playing}')
+            await interaction.followup.send(f'Now playing next in queue: {self.playing[interaction.guild_id]}' if next else f'Now playing: {self.playing[interaction.guild_id]}')
 
     @ app_commands.command(name="pause", description="Pause what's currently playing.")
     async def pause(self, interaction: discord.Interaction):
         voice = get(self.bot.voice_clients, guild=interaction.guild)
-        voice.pause()
-        await interaction.response.send_message("Paused!")
+        if voice.is_playing():
+            voice.pause()
+            await interaction.response.send_message("Paused!")
+        else:
+            await interaction.response.send_message("Already paused!")
 
     @ app_commands.command(name="resume", description="Resume what's currently playing.")
     async def resume(self, interaction: discord.Interaction):
         voice = get(self.bot.voice_clients, guild=interaction.guild)
-        voice.resume()
-        await interaction.response.send_message("Resumed!")
+        if not voice.is_playing():
+            voice.resume()
+            await interaction.response.send_message("Resumed!")
+        else:
+            await interaction.response.send_message("Already resumed!")
 
     async def play_next(self, interaction: discord.Interaction, auto=False):
-        if self.playing == '' and auto:
-            return
-
-        try:
-            self.playing = self.queue.pop(0)
-            voice = get(self.bot.voice_clients, guild=interaction.guild)
-            if not auto and voice.is_playing():
-                voice.stop()
-            await self.play_audio(self.playing, interaction, True, auto)
-        except IndexError as e:
-            await interaction.response.send_message('Queue is empty!')
-            self.playing = ''
+        self.playing[interaction.guild_id] = ''
+        if len(self.queue[interaction.guild_id]) > 0:
+            self.playing[interaction.guild_id] = self.queue[interaction.guild_id].pop(
+                0)
+            await self.play_audio(self.playing[interaction.guild_id], interaction, True, auto)
 
 
 async def setup(bot: commands.Bot):
