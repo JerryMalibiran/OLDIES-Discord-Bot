@@ -17,8 +17,6 @@ class Music(commands.Cog):
 
         ydl_format_options = {
             'format': 'bestaudio/best',
-            'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-            'restrictfilenames': True,
             'noplaylist': True,
             'nocheckcertificate': True,
             'ignoreerrors': False,
@@ -31,7 +29,8 @@ class Music(commands.Cog):
         }
 
         self.ffmpeg_options = {
-            'options': '-vn',
+            'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+            'options': '-vn'
         }
 
         self.ydl = YoutubeDL(ydl_format_options)
