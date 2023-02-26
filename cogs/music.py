@@ -13,7 +13,6 @@ class Music(commands.Cog):
         self.bot = bot
         self.queue = {}
         self.playing = {}
-        self.dir = os.getcwd()
 
         ydl_format_options = {
             'format': 'bestaudio/best',
@@ -158,7 +157,7 @@ class Music(commands.Cog):
 
         song = data['url']
         player = FFmpegPCMAudio(
-            song, **self.ffmpeg_options, executable=f'{self.dir}/ffmpeg.exe')
+            song, **self.ffmpeg_options, executable=f'./ffmpeg.exe')
 
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         voice.play(player, after=lambda e: print(f'Player error: {e}') if e else asyncio.run_coroutine_threadsafe(
