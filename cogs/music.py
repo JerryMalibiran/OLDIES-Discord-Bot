@@ -25,7 +25,7 @@ class Music(commands.Cog):
             'no_warnings': True,
             'default_search': 'auto',
             # bind to ipv4 since ipv6 addresses cause issues sometimes
-            # 'source_address': '0.0.0.0',
+            # 'source_address': '0.0.0.0'
         }
 
         self.ffmpeg_options = {
