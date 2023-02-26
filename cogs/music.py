@@ -171,21 +171,27 @@ class Music(commands.Cog):
 
     @ app_commands.command(name="pause", description="Pause what's currently playing.")
     async def pause(self, interaction: discord.Interaction):
-        voice = get(self.bot.voice_clients, guild=interaction.guild)
-        if voice.is_playing():
-            voice.pause()
-            await interaction.response.send_message("Paused!")
-        else:
-            await interaction.response.send_message("Already paused!")
+        status = await self.check_connection(interaction)
+
+        if status:
+            voice = get(self.bot.voice_clients, guild=interaction.guild)
+            if voice.is_playing():
+                voice.pause()
+                await interaction.response.send_message("Paused!")
+            else:
+                await interaction.response.send_message("Already paused!")
 
     @ app_commands.command(name="resume", description="Resume what's currently playing.")
     async def resume(self, interaction: discord.Interaction):
-        voice = get(self.bot.voice_clients, guild=interaction.guild)
-        if not voice.is_playing():
-            voice.resume()
-            await interaction.response.send_message("Resumed!")
-        else:
-            await interaction.response.send_message("Already resumed!")
+        status = await self.check_connection(interaction)
+
+        if status:
+            voice = get(self.bot.voice_clients, guild=interaction.guild)
+            if not voice.is_playing():
+                voice.resume()
+                await interaction.response.send_message("Resumed!")
+            else:
+                await interaction.response.send_message("Already resumed!")
 
     async def play_next(self, interaction: discord.Interaction, auto=False):
         self.playing[interaction.guild_id] = ''
