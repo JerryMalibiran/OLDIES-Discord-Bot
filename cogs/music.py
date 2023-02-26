@@ -112,7 +112,9 @@ class Music(commands.Cog):
         if status:
             voice = get(self.bot.voice_clients, guild=interaction.guild)
             self.playing[interaction.guild_id] = ''
-            self.queue[interaction.guild_id].clear()
+            if interaction.guild_id in self.queue:
+                self.queue[interaction.guild_id].clear()
+
             await voice.disconnect()
             await interaction.response.send_message(f'Disconnected!')
 
