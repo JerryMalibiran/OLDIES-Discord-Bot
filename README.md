@@ -30,6 +30,20 @@ OPENAI_API_KEY = os.environ['OPENAI-API-KEY']
 DISCORD_TOKEN = os.environ['DISCORD-TOKEN']
 ```
 
+Since repl.it doesn't allow making 'ffmpeg.exe' as the executable for FFmpegPCMAudio, use 'ffmpeg-static' instead:
+```
+npm install ffmpeg-static
+```
+
+After that, on 'music.py' cog, replace the executable of FFmpegPCMAudio from:
+```python
+executable=f'./ffmpeg.exe'
+```
+to:
+```python
+executable=f'./node_modules/ffmpeg-static/ffmpeg'
+```
+
 For some reason, Opus won't load on my replit. As a band-aid fix, download 'libopus.so' (libopus.so.0.x.x or similiar) online if you can find one and place it on to the root project directory and add this line of code on top of 'bot.py':
 
 ```python
