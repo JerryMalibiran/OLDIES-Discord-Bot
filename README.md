@@ -1,5 +1,5 @@
 # OLDIES-Discord-Bot
-## Discord bot utilizing OpenAI's API. Experimental.
+## Multifunctional discord bot. Use '/help' for the commands!
 Join our discord server at: https://discord.gg/WKutnmp6Dn
 
 # Requirements
