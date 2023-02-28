@@ -19,10 +19,10 @@ class DiscordBot(commands.Bot):
     async def setup_hook(self):
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
-                await self.load_extension(f"cogs.{filename[:-3]}")
+                await self.load_extension(f'cogs.{filename[:-3]}')
 
     async def on_ready(self):
         activity = discord.Activity(
             name='/help', type=discord.ActivityType.listening)
         await self.change_presence(activity=activity)
-        print(f'Logged in {self.user} ({self.user.id})')
+        print(f"Logged in {self.user} ({self.user.id})")

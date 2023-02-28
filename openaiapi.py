@@ -7,7 +7,7 @@ class OpenAIAPI:
 
     def completion(self, prompt):
         response = openai.Completion.create(
-            model="text-davinci-003",
+            model='text-davinci-003',
             prompt=prompt,
             temperature=1,
             max_tokens=100,
@@ -21,7 +21,7 @@ class OpenAIAPI:
         response = openai.Image.create(
             prompt=prompt,
             n=1,
-            size="256x256"
+            size='256x256'
         )
 
         return response['data'][0]['url']

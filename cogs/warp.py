@@ -34,27 +34,27 @@ class Warp(commands.Cog):
     async def add_data(self, interaction: discord.Interaction, device_id: str):
         await interaction.response.defer()
 
-        url = f"https://api.cloudflareclient.com/v0a{self.digitString(3)}/reg"
+        url = f'https://api.cloudflareclient.com/v0a{self.digitString(3)}/reg'
 
         try:
             install_id = self.genString(22)
             body = {
-                "key": "{}=".format(self.genString(43)),
-                "install_id": install_id,
-                "fcm_token": "{}:APA91b{}".format(install_id, self.genString(134)),
-                "referrer": device_id,
-                "warp_enabled": False,
-                "tos": datetime.now().isoformat()[:-3] + "+02:00",
-                "type": "Android",
-                "locale": "es_ES"
+                'key': '{}='.format(self.genString(43)),
+                'install_id': install_id,
+                'fcm_token': '{}:APA91b{}'.format(install_id, self.genString(134)),
+                'referrer': device_id,
+                'warp_enabled': False,
+                'tos': datetime.now().isoformat()[:-3] + '+02:00',
+                'type': 'Android',
+                'locale': 'es_ES'
             }
             data = dumps(body).encode("utf8")
             headers = {
-                "Content-Type": "application/json; charset=UTF-8",
-                "Host": "api.cloudflareclient.com",
-                "Connection": "Keep-Alive",
-                "Accept-Encoding": "gzip",
-                "User-Agent": "okhttp/4.10.0"
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Host': 'api.cloudflareclient.com',
+                'Connection': 'Keep-Alive',
+                'Accept-Encoding': 'gzip',
+                'User-Agent': 'okhttp/4.10.0'
             }
             req = urllib.request.Request(url, data, headers)
             response = urllib.request.urlopen(req)

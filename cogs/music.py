@@ -36,14 +36,14 @@ class Music(commands.Cog):
 
     async def check_connection(self, interaction: discord.Interaction):
         if interaction.user.voice is None:
-            await interaction.response.send_message('You must be inside a voice call!')
+            await interaction.response.send_message("You must be inside a voice call!")
             return False
 
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         if voice is None:
             await interaction.user.voice.channel.connect()
         elif interaction.user.voice.channel != voice.channel:
-            await interaction.response.send_message('I am in a different voice call!')
+            await interaction.response.send_message("I am in a different voice call!")
             return False
 
         return True
@@ -67,13 +67,13 @@ class Music(commands.Cog):
                 self.queue[interaction.guild_id] = []
 
             if len(self.queue[interaction.guild_id]) < 1:
-                await interaction.response.send_message('Queue is empty!')
+                await interaction.response.send_message("Queue is empty!")
                 return
 
             voice = get(self.bot.voice_clients, guild=interaction.guild)
             if voice.is_playing():
                 self.stop(interaction)
-                await interaction.response.send_message('Next audio will be played shortly...')
+                await interaction.response.send_message("Next audio will be played shortly...")
             else:
                 await self.play_next(interaction)
 
@@ -92,7 +92,7 @@ class Music(commands.Cog):
             else:
                 self.queue[interaction.guild_id] = [url]
 
-            await interaction.response.send_message(f'{url} added to queue!')
+            await interaction.response.send_message(f"{url} added to queue!")
 
     @app_commands.command(name="clear", description="Clear the queue.")
     async def clear(self, interaction: discord.Interaction):
@@ -101,7 +101,7 @@ class Music(commands.Cog):
         if status:
             if interaction.guild.id in self.queue:
                 self.queue[interaction.guild_id].clear()
-            await interaction.response.send_message(f'Queue cleared!')
+            await interaction.response.send_message("Queue cleared!")
 
     @app_commands.command(name="disconnect", description="Disconnect the bot.")
     async def disconnect(self, interaction: discord.Interaction):
@@ -114,7 +114,7 @@ class Music(commands.Cog):
                 self.queue[interaction.guild_id].clear()
 
             await voice.disconnect()
-            await interaction.response.send_message(f'Disconnected!')
+            await interaction.response.send_message("Disconnected!")
 
     @app_commands.command(name="current", description="Shows what is currently playing.")
     async def current(self, interaction: discord.Interaction):
@@ -123,24 +123,24 @@ class Music(commands.Cog):
             self.playing[interaction.guild_id] = ''
 
         if self.playing[interaction.guild_id] == '':
-            audio = 'N/A'
+            audio = "N/A"
         else:
             audio = self.playing[interaction.guild_id]
 
-        await interaction.response.send_message(f'Now playing: {audio}')
+        await interaction.response.send_message(f"Now playing: {audio}")
 
     @app_commands.command(name="queue", description="Shows the queue.")
     async def queue(self, interaction: discord.Interaction):
         if interaction.guild_id not in self.queue:
             self.queue[interaction.guild_id] = []
 
-        str_queue = 'Queue:'
+        str_queue = "Queue:"
 
         if len(self.queue[interaction.guild_id]) < 1:
             str_queue += '\nN/A'
         else:
             for i, val in enumerate(self.queue[interaction.guild_id]):
-                str_queue += f'\n{i+1}. {val}'
+                str_queue += f"\n{i+1}. {val}"
 
         await interaction.response.send_message(str_queue)
 
@@ -157,17 +157,17 @@ class Music(commands.Cog):
 
         song = data['url']
         player = FFmpegPCMAudio(
-            song, **self.ffmpeg_options, executable=f'./ffmpeg.exe')
+            song, **self.ffmpeg_options, executable='./ffmpeg.exe')
 
         voice = get(self.bot.voice_clients, guild=interaction.guild)
-        voice.play(player, after=lambda e: print(f'Player error: {e}') if e else asyncio.run_coroutine_threadsafe(
+        voice.play(player, after=lambda e: print(f"Player error: {e}") if e else asyncio.run_coroutine_threadsafe(
             self.play_next(interaction, True), loop))
         self.playing[interaction.guild_id] = data['original_url']
 
         if auto:
-            await interaction.channel.send(f'Now playing next in queue: {self.playing[interaction.guild_id]}')
+            await interaction.channel.send(f"Now playing next in queue: {self.playing[interaction.guild_id]}")
         else:
-            await interaction.followup.send(f'Now playing next in queue: {self.playing[interaction.guild_id]}' if next else f'Now playing: {self.playing[interaction.guild_id]}')
+            await interaction.followup.send(f"Now playing next in queue: {self.playing[interaction.guild_id]}" if next else f"Now playing: {self.playing[interaction.guild_id]}")
 
     @ app_commands.command(name="pause", description="Pause what's currently playing.")
     async def pause(self, interaction: discord.Interaction):

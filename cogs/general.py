@@ -9,7 +9,7 @@ class Dropdown(Select):
         self.bot = bot
         options = [discord.SelectOption(
             label=cog_name, description=cog.description) for cog_name, cog in self.bot.cogs.items()]
-        super().__init__(placeholder='Select a category...',
+        super().__init__(placeholder="Select a category...",
                          min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
@@ -22,9 +22,9 @@ class Dropdown(Select):
         for command in cog.walk_app_commands():
             commands_list.append(command)
 
-        embed = discord.Embed(title=f'{cog.__cog_name__} Commands',
-                              description='\n'.join(
-                                  f'**{self.bot.prefix}{command.name}**\n`{command.description}`' for command in commands_list
+        embed = discord.Embed(title=f"{cog.__cog_name__} Commands",
+                              description="\n".join(
+                                  f"**{self.bot.prefix}{command.name}**\n`{command.description}`" for command in commands_list
                               ))
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
