@@ -157,7 +157,7 @@ class Music(commands.Cog):
 
         song = data['url']
         player = FFmpegPCMAudio(
-            song, **self.ffmpeg_options, executable='./ffmpeg.exe')
+            song, **self.ffmpeg_options, executable='ffmpeg')
 
         voice = get(self.bot.voice_clients, guild=interaction.guild)
         voice.play(player, after=lambda e: print(f"Player error: {e}") if e else asyncio.run_coroutine_threadsafe(

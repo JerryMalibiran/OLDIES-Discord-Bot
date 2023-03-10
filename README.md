@@ -23,7 +23,7 @@ OPENAI-API-KEY = <YOUR-OPENAI-API-KEY>
 DISCORD-TOKEN = <YOUR-DISCORD-TOKEN>
 ```
 
-4. Download the FFMpeg executable files at https://ffmpeg.org/download.html then copy 'ffmpeg.exe' to project root directory.
+4. Download the FFmpeg executable files at https://ffmpeg.org/download.html (.exe files in the 'bin' folder) then place it anywhere you like to place it. After that, add the path of the folder to your environment variables an test it on cmd/powershell by entering 'ffmpeg' and see if it works.
 5. run 'py run.py' command on your terminal
 
 # Repl.it
@@ -47,7 +47,7 @@ npm install ffmpeg-static
 After that, on 'music.py' cog, replace the executable of FFmpegPCMAudio from:
 
 ```python
-executable='./ffmpeg.exe'
+executable='ffmpeg'
 ```
 
 to:
